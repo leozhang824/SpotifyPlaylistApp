@@ -2,9 +2,9 @@ Final project for CS 310 Scalable Software Architecture
 
 A Spotify playlist generator using the Billboard Top 100 playlist from Spotify. Users can create playlists and add random songs based off on genre to specific playlists.
 
-Users can perform 8 functions:
+Users can perform 10 commands:
 
-  0 => ends the functions
+  0 => ends the program
   
   1 => create user
   
