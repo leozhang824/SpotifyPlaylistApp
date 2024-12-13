@@ -1,0 +1,83 @@
+﻿CREATE DATABASE IF NOT EXISTS spotifyapp;
+
+
+USE spotifyapp;
+
+
+DROP TABLE IF EXISTS tokens;
+DROP TABLE IF EXISTS songs;
+DROP TABLE IF EXISTS playlists;
+DROP TABLE IF EXISTS users;
+
+
+CREATE TABLE users
+(
+    userid       int not null AUTO_INCREMENT,
+    username     varchar(128) not null,
+    pwdhash      varchar(256) not null,
+    PRIMARY KEY  (userid),
+    UNIQUE       (username)
+);
+
+
+ALTER TABLE users AUTO_INCREMENT = 80001;  -- starting value
+
+
+CREATE TABLE tokens
+(
+    token             varchar(128) not null,  -- authentication token
+    userid            int not null,           -- user that token identifies
+    expiration_utc    datetime not null,      -- token's expiration date/time UTC
+    PRIMARY KEY (token),
+    FOREIGN KEY (userid) REFERENCES users(userid)
+);
+
+
+CREATE TABLE playlists
+(
+    playlistid        int not null AUTO_INCREMENT,
+    userid            int not null,
+    playlist_name      varchar(128) not null,
+    num_songs         int not null,
+    PRIMARY KEY (playlistid),
+    FOREIGN KEY (userid) REFERENCES users(userid)
+);
+
+
+ALTER TABLE playlists AUTO_INCREMENT = 1001;  -- starting value
+
+
+CREATE TABLE songs
+(
+    songid            int not null AUTO_INCREMENT,
+    playlistid        int not null,
+    artist_name       varchar(128) not null,
+    song_name         varchar(128) not null,  
+    spotify_songid    varchar(256) not null,
+    PRIMARY KEY (songid),
+    FOREIGN KEY (playlistid) REFERENCES playlists(playlistid)
+);
+
+
+ALTER TABLE songs AUTO_INCREMENT = 160001;  -- starting value
+
+
+DROP USER IF EXISTS 'spotifyapp-read-only';
+DROP USER IF EXISTS 'spotifyapp-read-write';
+
+
+CREATE USER 'spotifyapp-read-only' IDENTIFIED BY 'abc123!!';
+CREATE USER 'spotifyapp-read-write' IDENTIFIED BY 'def456!!';
+
+
+GRANT SELECT, SHOW VIEW ON spotifyapp.*
+      TO 'spotifyapp-read-only';
+GRANT SELECT, SHOW VIEW, INSERT, UPDATE, DELETE, DROP, CREATE, ALTER ON spotifyapp.*
+      TO 'spotifyapp-read-write';
+     
+FLUSH PRIVILEGES;
+
+
+--
+-- done
+--
