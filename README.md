@@ -5,7 +5,6 @@ A Spotify playlist generator using the Billboard Top 100 playlist from Spotify. 
 Users can perform 8 functions:
 
   0 => ends the functions
-  
   1 => create user
   
   2 => login
